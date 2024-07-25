@@ -1,4 +1,4 @@
-import "./style.scss";
+import "./navbar.scss";
 import React, { useState } from "react";
 import { FaHome, FaSearch, FaUserAlt } from "react-icons/fa";
 

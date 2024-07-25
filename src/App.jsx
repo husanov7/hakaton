@@ -1,4 +1,4 @@
-import "./style.scss";
+import "/App.scss";
 import BottomNav from "./components/navbar";
 export default function App() {
   return (
