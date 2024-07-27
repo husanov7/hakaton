@@ -5,3 +5,26 @@
   .content {
     padding-bottom: 60px; /* Adjust based on your nav height */
   }
+  .oll{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5px;
+  
+  }
+  .all{
+    width: 65%;
+    background-image: url("/menu.avif");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+  @media (max-width:800px) {
+    .all{
+        width: 100%;
+        
+        .oll{
+            width: 70%;
+            margin: 0 auto;
+        }
+    }
+  }

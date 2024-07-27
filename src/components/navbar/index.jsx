@@ -8,7 +8,7 @@ const BottomNav = () => {
   const handleNavClick = (nav) => {
     setActive(nav);
   };
-
+ 
   return (
     <div className="bottom-nav">
       <div
@@ -30,6 +30,7 @@ const BottomNav = () => {
         <FaUserAlt />
       </div>
     </div>
+    
   );
 };
 
