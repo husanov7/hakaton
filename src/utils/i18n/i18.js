@@ -8,25 +8,13 @@ import about from "./translation/en/about";
 // Sample translation resources
 const resources = {
   en: {
-   
-    //  nom:"olive",
     about: enAbout,
   },
   ru: {
-    translation: {
-        narx:"1300",
-        nom:"Оливье",
-       tarkib:"",
-       about:"",
-    },
+    about: ruAbout,
   },
   uz: {
-    translation: {
-        narx:"1400",
-        nom:"oliviya",
-       tarkib:"",
-       about:"Biz haqimizda",
-    },
+    about: uzAbout,
   },
 };
 

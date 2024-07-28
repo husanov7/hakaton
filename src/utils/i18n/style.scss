@@ -1,0 +1,17 @@
+.select{
+    width: 150px;
+    margin-left: auto;
+    .relative{
+        min-width: 10px !important;
+        
+    }
+    li,span{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+    }
+    .img{
+        width: 40px;
+    }
+}

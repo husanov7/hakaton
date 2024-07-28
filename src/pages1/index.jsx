@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useTransition } from "react";
 import {
   Button,
   Dialog,
@@ -7,6 +7,7 @@ import {
   DialogHeader,
 } from "@material-tailwind/react";
 import api from "../axios"; // Correct the path if axios.js is in a different directory
+import { useTranslation } from "react-i18next";
 
 const days = [
   { day: "Пн", time: "8:00 - 23:00" },
@@ -24,16 +25,19 @@ export default function Onas() {
   const [selectedDay, setSelectedDay] = useState(days[0]);
   const [name, setName] = useState("");
   const [number, setNumber] = useState("");
+  const [message, setMessage] = useState("");
 
   const newMessage = (e) => {
     e.preventDefault();
     api
-      .post("/message", { nomi: name, nomer: number })
+      .post("/message", { nomi: name, nomer: number, message: message })
       .then((res) => alert("bajarildi!"))
       .catch((err) => alert("Error: " + err.message));
-      setNumber('')
-      setName('')
+    setNumber("");
+    setName("");
+    setMessage("");
   };
+  const {t} = useTranslation('about')
 
   const handleOpen = () => setOpen(!open);
 
@@ -42,26 +46,26 @@ export default function Onas() {
       <div className="bg-white shadow-md rounded-lg p-6">
         <div className="flex flex-row justify-between">
           <div>
-            <h2 className="text-2xl font-bold mb-2">Qamish Xorazm</h2>
+            <h2 className="text-2xl font-bold mb-2">{t('name')}</h2>
             <p className="text-2xl font-bold mb-2">Taomlari</p>
             <p className="text-gray-700 mb-4">
-              Обслуживание: <span className="text-[black]">1%</span>
+            {t('service')}: <span className="text-[black]">1%</span>
             </p>
             <p className="text-gray-700 mb-4">
-              Пароль от Wi-Fi: <span className="text-[black]">null</span>
+            {t('password')} <span className="text-[black]">null</span>
             </p>
           </div>
           <div>
             <img
               className="w-[200px]"
-              src="http://giotto.uz/wp-content/uploads/2018/09/logo.png"
+              src="https://dostavkainfo.uz/wp-content/uploads/2020/03/rayhon.jpg"
               alt="logo"
             />
           </div>
         </div>
         <div className="flex flex-col items-center">
           <div className="flex flex-row gap-[195px] justify-between mb-4">
-            <h1>Режим работы:</h1>
+            <h1>{t('mode')}</h1>
             <span>{selectedDay.time}</span>
           </div>
           <div className="flex space-x-2 mb-4">
@@ -84,7 +88,7 @@ export default function Onas() {
               className="w-[400px] bg-blue-500 text-[white] h-[45px] rounded-[20px]"
               onClick={handleOpen}
             >
-              собшите нам
+              {t('send')}
             </button>
             <Dialog open={open} handler={handleOpen}>
               <DialogHeader>Massage</DialogHeader>
@@ -110,12 +114,14 @@ export default function Onas() {
                     />
                   </div>
                   <textarea
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
                     placeholder="message"
                     name="textarea"
                     className="w-[100%] p-[5px] border-solid border-[2px] border-black h-[100px] rounded-[10px]"
                   ></textarea>
                   <Button type="submit" variant="gradient" color="blue">
-                    Send
+                    {t('send')}
                   </Button>
                 </form>
               </DialogBody>
