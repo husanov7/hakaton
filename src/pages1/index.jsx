@@ -155,7 +155,7 @@ export default function Onas() {
           <hr />
           <div className="flex flex-row justify-between p-[5px]">
             <p className="text-gray-700">Наш gmail: </p>
-            <p>giottoilgelato@gmail.com</p>
+            <p>rayhon_reastaurant@gmail.com</p>
           </div>
           <hr />
           <a
