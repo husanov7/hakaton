@@ -9,7 +9,6 @@ import { useTranslation } from 'react-i18next';
 import { Link, Route, Routes } from "react-router-dom";
 import Onas from "./pages1";
 import Cart from "./pages2";
-// import '~flag-icon-css/sass/flag-icon';
 
 export default function App() {
   const [active, setActive] = useState("home");
@@ -19,7 +18,7 @@ export default function App() {
   return (
     <>
      
-      <div className='all'>
+      <div className='all  m-auto'>
         <div className="logo">
         <img src="/taste_transparent.png" alt="" />
            
@@ -34,26 +33,28 @@ export default function App() {
           <Route path="/pages2" element={<Cart/>}/>
         </Routes>
 
-        <div className="bottom-nav">
+        <div className="bottom-nav m-auto ">
           
               <Link to="/"><div
             className={`nav-item ${active === "home" ? "active" : ""}`}
             onClick={() => handleNavClick("home")}
-            
-            ><FaHome />
+            >
+            <i class="fa-solid fa-bars"></i>
             </div> </Link>
            
           
               <Link to={"/pages1"}><div
             className={`nav-item ${active === "search" ? "active" : ""}`}
             onClick={() => handleNavClick("search")}>
-              <FaSearch />
+              {/* <FaSearch /> */}
+              <FaHome />
           </div></Link>
             
          
               <Link to={"pages2"}>  <div
             className={`nav-item ${active === "profile" ? "active" : ""}`}
-            onClick={() => handleNavClick("profile")}><FaUserAlt />
+            onClick={() => handleNavClick("profile")}>        <i class="fa-solid fa-cart-shopping"></i>
+
           </div></Link>
            
         </div>

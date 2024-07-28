@@ -1,7 +1,7 @@
 .bottom-nav {
     position: fixed;
     z-index: 100;
-    border: 2px solid #869042;
+    border: 2px solid #004332;
     bottom: 0;
     width: 100%;
     display: grid;
@@ -34,7 +34,7 @@
   
   .nav-item.active {
     color: white;
-    background-color: #869042;
+    background-color: #004332;
   }
   .nav-item span {
     display: block;
@@ -63,6 +63,12 @@
     }
     60% {
       transform: translateY(-5px);
+    }
+  }
+  @media (max-width:800px) {
+    .bottom-nav{
+      width: 100%;
+      margin: 0 auto;
     }
   }
   

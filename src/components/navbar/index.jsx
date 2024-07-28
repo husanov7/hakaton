@@ -27,7 +27,7 @@ const BottomNav = () => {
         className={`nav-item ${active === "profile" ? "active" : ""}`}
         onClick={() => handleNavClick("profile")}
       >
-        <FaUserAlt />
+        <i class="fa-solid fa-cart-shopping"></i>
       </div>
     </div>
     

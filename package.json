@@ -12,6 +12,7 @@
     "@material-tailwind/react": "2.1.8",
     "axios": "^1.7.2",
     "flag-icon-css": "^4.1.7",
+    "font-awesome": "^4.7.0",
     "i18next": "^23.12.2",
     "query": "^0.2.0",
     "react": "18.2.0",
