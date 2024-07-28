@@ -1,15 +1,16 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
+import enAbout from ".../../translation/en/about";
+import ruAbout from ".../../translation/ru/about";
+import uzAbout from ".../../translation/uz/about";
 
+import about from "./translation/en/about";
 // Sample translation resources
 const resources = {
   en: {
-    translation: {
-     narx:"",
-     nom:"olive",
-    tarkib:"",
-    about:"About US"
-    },
+   
+    //  nom:"olive",
+    about: enAbout,
   },
   ru: {
     translation: {

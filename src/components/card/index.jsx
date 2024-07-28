@@ -110,7 +110,6 @@ export default function Card() {
     }
   }, []); // Empty dependency array to run only once
 
-  const { dark, changeMode } = useMode();
   const { t, i18n } = useTranslation();
 
   const [active, setActive] = useState("home");

@@ -84,9 +84,8 @@ ul{
     width: 100%;
     color: white;
     padding: 10px;
-    box-shadow: 0px 0px 5px ;
+    // box-shadow: 0px 0px 5px ;
     transition: 0.5s;
-    // border: 1px solid white;
     button{
         padding: 10px 30px ;
         background-color: rgb(232, 230, 230);
@@ -108,14 +107,9 @@ ul{
     color: white;
     nav {
         overflow-x:scroll;
-        scrollbar-width: none;
         color: white;
         white-space: nowrap;
-        padding: 10px;
-        border-bottom: 1px solid ;
-       
-        
-       
+        padding: 0px 20px;
       }
       nav ul {
         display: flex;
@@ -131,9 +125,7 @@ ul{
         border-radius: 5px;
         transition: 0.3s;
       }
-      nav li:hover{
-        box-shadow: 0px 0px 30px white;
-      }
+      
       nav a {
         display: block;
         padding: 10px;

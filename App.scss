@@ -20,9 +20,7 @@
   }
   .all{
     width: 65%;
-    background-image: 
-    linear-gradient( rgba(65, 65, 65, 0.368), rgba(45, 44, 44, 0.642)), 
-    url("/transparent_2024-07-28T02-11-20.png");
+   
       background-size: cover; 
       background-position: center;
       overflow-x: scroll;
@@ -39,7 +37,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 30px;
-   
+   border-bottom: 1px solid black;
     height: 10vh;
     img{
       width: 100px;
