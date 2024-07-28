@@ -19,15 +19,15 @@ function LanguageSwitcher() {
   };
 
   return (
-    <div className="relative max-w-[120px] dark:text-white text-secondary">
-      {/* <select
+    <div className="relative max-w-[120px]  text-secondary">
+      <select 
         defaultValue={localStorage.getItem("language")}
         onChange={handleLanguageChange}
         className="text-black cursor-pointer border border-black focus:outline-none rounded-sm">
-        <option value="uz">UZ</option>
+        <option value="uz">UZ </option>
         <option value="ru">RU</option>
         <option value="en">EN</option>
-      </select> */}
+      </select>
     </div>
   );
 }

@@ -1,3 +1,10 @@
+*{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+// @import '~flag-icon-css/sass/flag-icon';
+
 .App {
     text-align: center;
   }
@@ -13,11 +20,50 @@
   }
   .all{
     width: 65%;
-    background-image: url("/menu.avif");
-    background-position: center;
-    background-size: cover;
+    background-image: 
+    linear-gradient( rgba(65, 65, 65, 0.368), rgba(45, 44, 44, 0.642)), 
+    url("/transparent_2024-07-28T02-11-20.png");
+      background-size: cover; 
+      background-position: center;
+      overflow-x: scroll;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+    height: 100vh;
+    width: 100vw;
     background-repeat: no-repeat;
   }
+  .logo{
+    width: 100%;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 30px;
+   
+    height: 10vh;
+    img{
+      width: 100px;
+    }
+  }
+  select {
+    appearance: none;
+    background-color: white;
+    border-radius: 4px;
+    padding: 0.5rem;
+    font-size: 1rem;
+    color: #333;
+    border: 1px solid #ccc;
+  }
+  
+  select option {
+    padding: 0.5rem;
+    font-size: 1rem;
+  }
+  
+  .flag-icon {
+    margin-right: 8px;
+  }
+  
   @media (max-width:800px) {
     .all{
         width: 100%;

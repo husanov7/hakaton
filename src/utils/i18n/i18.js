@@ -6,7 +6,7 @@ const resources = {
   en: {
     translation: {
      narx:"",
-     nom:"",
+     nom:"olive",
     tarkib:"",
     about:"About US"
     },
@@ -14,7 +14,7 @@ const resources = {
   ru: {
     translation: {
         narx:"1300",
-        nom:"",
+        nom:"Оливье",
        tarkib:"",
        about:"",
     },
@@ -22,7 +22,7 @@ const resources = {
   uz: {
     translation: {
         narx:"1400",
-        nom:"",
+        nom:"oliviya",
        tarkib:"",
        about:"Biz haqimizda",
     },
