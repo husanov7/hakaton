@@ -14,7 +14,7 @@
 //         .forEach((x) => AnimateProgress(x));
 //     }
 //   };
-  
+
 //   const { dark, changeMode } = useMode();
 //   const { t } = useTranslation();
 //   console.log(dark, 1)
@@ -43,7 +43,7 @@
 //           <LanguageSwitcher />
 
 //       <div className={`${dark ? "dark" : "cards"}`}>
-      
+
 
 //         <div className="card">
 //           <img src="/salat_4.webp" alt="" />
@@ -86,7 +86,7 @@
 //           <button>120000</button>
 //         </div>
 //       </div>
-     
+
 //     </>
 //   );
 // }
@@ -97,6 +97,7 @@ import useMode from "../../utils/state";
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from "react";
 import { FiUploadCloud } from "react-icons/fi";
+import { api } from "../../axios";
 
 export default function Card() {
   useEffect(() => {
@@ -119,75 +120,79 @@ export default function Card() {
 
   const lang = localStorage.getItem("language");
 
+  const [menu, setMenu] = useState([])
+
   
 
- 
+
+
+
 
   return (
     <>
       <div className="prod">
-      
-  <nav>
-    <ul >
-    <li><a href="#appetizers">Appetizers</a></li>
-      <li><a href="#main-courses">Main Courses</a></li>
-      <li><a href="#desserts">Desserts</a></li>
-      <li><a href="#drinks">Drinks</a></li>   
-       <li><a href="#appetizers">Appetizers</a></li>
-      <li><a href="#main-courses">Main Courses</a></li>
-      <li><a href="#desserts">Desserts</a></li>
-      <li><a href="#drinks">Drinks</a></li> 
-      <li><a href="#appetizers">Appetizers</a></li>
-      <li><a href="#main-courses">Main Courses</a></li>
-      <li><a href="#desserts">Desserts</a></li>
-      <li><a href="#drinks">Drinks</a></li>   
-    </ul>   
 
-  </nav>
-  <section id="appetizers">
-    </section>
-  <footer>
-    </footer>
+        <nav>
+          <ul >
+            <li><a href="#appetizers">Appetizers</a></li>
+            <li><a href="#main-courses">Main Courses</a></li>
+            <li><a href="#desserts">Desserts</a></li>
+            <li><a href="#drinks">Drinks</a></li>
+            <li><a href="#appetizers">Appetizers</a></li>
+            <li><a href="#main-courses">Main Courses</a></li>
+            <li><a href="#desserts">Desserts</a></li>
+            <li><a href="#drinks">Drinks</a></li>
+            <li><a href="#appetizers">Appetizers</a></li>
+            <li><a href="#main-courses">Main Courses</a></li>
+            <li><a href="#desserts">Desserts</a></li>
+            <li><a href="#drinks">Drinks</a></li>
+          </ul>
+
+        </nav>
+        <section id="appetizers">
+        </section>
+        <footer>
+        </footer>
       </div>
       <div className='cards'>
         <div className="card ">
-          <img src="/salat_4.webp" alt="salat" />
-          <h1>{t("nom")}</h1>
+          <img src="/photo/dish1.jpg" alt="salat" />
+          <h1>Куриная Хашлама</h1>
           <button>120000</button>
         </div>
         <div className="card">
-          <img src="/salat_4.webp" alt="salat" />
-          <h1>{t("nom")}</h1>
+          <img src="/photo/dish2.jpg" alt="salat" />
+          <h1>Сужуклу Юмурта</h1>
           <button>120000</button>
         </div>
         <div className="card">
-          <img src="/salat_4.webp" alt="salat" />
-          <h1>{t("nom")}</h1>
+          <img src="/photo/dish3.jpg" alt="salat" />
+          <h1>Ассорти Донер</h1>
           <button>120000</button>
         </div>
         <div className="card">
-          <img src="/salat_4.webp" alt="salat" />
-          <h1>{t("nom")}</h1>
+          <img src="/photo/dish4.jpg" alt="salat" />
+          <h1>Мясной Искандер Кебаб</h1>
           <button>120000</button>
         </div>
         <div className="card">
-          <img src="/salat_4.webp" alt="salat" />
-          <h1>{t("nom")}</h1>
+          <img src="/photo/dish5.jpg" alt="salat" />
+          <h1>Ассорти Донер</h1>
           <button>120000</button>
         </div>
         <div className="card">
-          <img src="/salat_4.webp" alt="salat" />
-          <h1>{t("nom")}</h1>
+          <img src="/photo/dish9.jpg" alt="salat" />
+          <h1>Глазунья Из 2 Яиц</h1>
           <button>120000</button>
         </div>
         <div className="card">
-          <img src="/salat_4.webp" alt="salat" />
-          <h1>{t("nom")}</h1>
+          <img src="/photo/dish6.jpg" alt="salat" />
+          <h1>Омлет</h1>
           <button>120000</button>
         </div>
         <div className="card">
-          <img src="/salat_4.webp" alt="salat" />
-          <h1>{t("nom")}</h1>
+          <img src="/photo/dish8.jpg" alt="salat" />
+          <h1>Кавурмали Юмурта</h1>
           <button>120000</button>
         </div>
         {/* Repeat other card components similarly */}

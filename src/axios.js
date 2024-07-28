@@ -1,6 +1,5 @@
 import axios from "axios";
 
- const api = axios.create({
-  baseURL: "https://crudcrud.com/api/016d24a1532b4b18a59c72fb781e30af",
+ export  const api = axios.create({
+  baseURL: "https://crudcrud.com/api/26e3527b61b14ce2b78ff3ab8c1578d8",
 });
-export default api;

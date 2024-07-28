@@ -147,7 +147,7 @@
 import React, { useState } from "react";
 import { Button, Dialog, DialogBody, DialogFooter, DialogHeader } from "@material-tailwind/react";
 import { useTranslation } from "react-i18next";
-// import { api } from "./../axios";
+import { api } from "./../axios";
 
 const days = [
   { day: 'Пн', time: '8:00 - 23:00' },
@@ -167,12 +167,12 @@ export default function Onas() {
   const [name, setName] = useState("");
   const [number, setNumber] = useState("");
 
-  // const newMessage = (e) => {
-  //   e.preventDefault();
-  //   api.post("/message", { nomi: name, nomer: number })
-  //     .then(res => alert("bajarildi!"))
-  //     .catch(err => alert("Error: " + err.message));
-  // }
+  const newMessage = (e) => {
+    e.preventDefault();
+    api.post("/message", { nomi: name, nomer: number })
+      .then(res => alert("bajarildi!"))
+      .catch(err => alert("Error: " + err.message));
+  }
 
   const handleOpen = () => setOpen(!open);
 
@@ -191,7 +191,7 @@ export default function Onas() {
             </p>
           </div>
           <div>
-            <img className="w-[200px]" src="http://giotto.uz/wp-content/uploads/2018/09/logo.png" alt="logo" />
+            <img className="w-[200px]" src="https://dostavkainfo.uz/wp-content/uploads/2020/03/rayhon.jpg" alt="logo" />
           </div>
         </div>
         <div className="flex flex-col items-center">
@@ -265,7 +265,7 @@ export default function Onas() {
           <hr />
           <div className="flex flex-row justify-between p-[5px]">
             <p className="text-gray-700">Наш gmail: </p>
-            <p>giottoilgelato@gmail.com</p>
+            <p>rayhon@gmail.com</p>
           </div>
           <hr />
           <a href="https://www.instagram.com/m1rkomilovv/?next=%2F" className="text-blue-500 p-[5px]">
