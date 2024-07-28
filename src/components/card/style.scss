@@ -80,24 +80,25 @@ ul{
     border-radius: 5px;
     height: 100vh;
     margin: 10px 20px 20px 20px;  
+    overflow-x: hidden;
   .card{
     width: 100%;
     color: white;
+    background-color: #004332;
+    border-radius: 20px;
     padding: 10px;
-    // box-shadow: 0px 0px 5px ;
     transition: 0.5s;
+   
     button{
         padding: 10px 30px ;
-        background-color: rgb(232, 230, 230);
-        color: black;
+        background-color: white;
+        color: #004332;
         border-radius: 20px;
         font-size: 20px;
         font-weight: 500;
     }
   }
-  .card:hover{
-    box-shadow: 0px 0px 30px ;
-  }
+  
 }
 .h1{
     color: #fff;
@@ -109,7 +110,7 @@ ul{
         overflow-x:scroll;
         color: white;
         white-space: nowrap;
-        padding: 0px 20px;
+        padding: 0px 0px;
       }
       nav ul {
         display: flex;
@@ -120,7 +121,7 @@ ul{
       }
       nav li {
         margin-right: 10px;
-        padding: 5px 15px;
+        padding: 5px 10px;
         background-color: white;
         border-radius: 5px;
         transition: 0.3s;
