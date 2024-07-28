@@ -20,10 +20,11 @@ export default function Onas() {
   const [selectedDay, setSelectedDay] = useState(days[0]);
   const [name, setName] = useState("");
   const [number, setNumber] = useState("");
+  const [message, setMessage] = useState("");
 
   const newMessage = (e) => {
     e.preventDefault();
-    api.post("/message", { nomi: name, nomer: number })
+    api.post("/message", { nomi: name, nomer: number, message:message })
       .then(res => alert("bajarildi!"))
       .catch(err => alert("Error: " + err.message));
   }
@@ -87,6 +88,8 @@ export default function Onas() {
                     />
                   </div>
                   <textarea
+                  value={message}
+                  onChange={(e)=> setMessage(e.target.value)}
                     placeholder="message"
                     name="textarea"
                     className="w-[100%] p-[5px] border-solid border-[2px] border-black h-[100px] rounded-[10px]"
