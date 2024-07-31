@@ -1,14 +1,14 @@
 import "/App.scss";
 import BottomNav from "./components/navbar";
-import Card from "./components/card";
 import React, { useEffect, useState } from "react";
 import { FaHome, FaSearch, FaUserAlt } from "react-icons/fa";
 import useMode from './utils/state';
 import LanguageSwitcher from './utils/i18n/LngSwitcher';
 import { useTranslation } from 'react-i18next';
 import { Link, Route, Routes } from "react-router-dom";
-import Onas from "./pages1";
-import Cart from "./pages2";
+import Onas from "./pages/pages1";
+import Cart from "./pages/pages2";
+import Home from "./pages/landing";
 
 export default function App() {
   const [active, setActive] = useState("home");
@@ -28,7 +28,7 @@ export default function App() {
 
         
         <Routes>
-          <Route path="/" element={<Card/>}/>
+          <Route path="/" element={<Home />}/>
           <Route path="/pages1" element={<Onas/>}/>
           <Route path="/pages2" element={<Cart/>}/>
         </Routes>
