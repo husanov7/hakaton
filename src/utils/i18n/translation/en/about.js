@@ -1,6 +1,6 @@
 const about ={
-    name:"Qamish Xorazm foods",
-    serivce:"Service",
+    name:"Rayhon foods",
+    service:"Service",
     password:"Wi-Fi password:",
     mode:"OPERATING MODE:",
     send:"contact with us",

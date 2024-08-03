@@ -4,6 +4,7 @@ import { Button, Dialog, DialogBody, DialogFooter, DialogHeader } from "@materia
 import { useTranslation } from "react-i18next";
 import { api } from "./../../axios";
 
+
 const days = [
   { day: 'Пн', time: '8:00 - 23:00' },
   { day: 'Вт', time: '10:00 - 22:00' },
@@ -15,7 +16,7 @@ const days = [
 ];
 
 export default function Onas() {
-  const { t } = useTranslation();
+  const { t } = useTranslation("about");
 
   const [open, setOpen] = useState(false);
   const [selectedDay, setSelectedDay] = useState(days[0]);
@@ -36,13 +37,13 @@ export default function Onas() {
       <div className="bg-white shadow-md rounded-lg p-6">
         <div className="flex flex-row justify-between">
           <div>
-            <h2 className="text-2xl font-bold mb-2">Qamish Xorazm</h2>
-            <p className="text-2xl font-bold mb-2">{t("nom")}</p>
+            <h2 className="text-2xl font-bold mb-2">{t("name")}</h2>
+            <p className="text-2xl font-bold mb-2"></p>
             <p className="text-gray-700 mb-4">
-              Обслуживание: <span className="text-[black]">1%</span>
+              {t("service")} <span className="text-[black]">1%</span>
             </p>
             <p className="text-gray-700 mb-4">
-              Пароль от Wi-Fi: <span className="text-[black]">null</span>
+              {t("password")} <span className="text-[black]">null</span>
             </p>
           </div>
           <div>
@@ -51,7 +52,7 @@ export default function Onas() {
         </div>
         <div className="flex flex-col items-center">
           <div className="flex flex-row gap-[195px] justify-between mb-4">
-            <h1>Режим работы:</h1>
+            <h1>{t("mode")}</h1>
             <span>{selectedDay.time}</span>
           </div>
           <div className="flex space-x-2 mb-4">
@@ -66,7 +67,7 @@ export default function Onas() {
             ))}
           </div>
           <div className="modal pt-[10px]">
-            <button className="w-[400px] bg-blue-500 text-[white] h-[45px] rounded-[20px]" onClick={handleOpen}>собшите нам</button>
+            <button className="w-[400px] bg-blue-500 text-[white] h-[45px] rounded-[20px]" onClick={handleOpen}>{t("send")}</button>
             <Dialog open={open} handler={handleOpen}>
               <DialogHeader>Massage</DialogHeader>
               <DialogBody className="gap-[20px] flex flex-col">
@@ -109,17 +110,17 @@ export default function Onas() {
           </div>
         </div>
         <div className="pt-[20px]">
-          <p className="text-gray-700 mb-4">Адрес: </p>
-          <p className="text-black font-semibold mb-4 text-[20px]">ул. Мукуми 200</p>
+          <p className="text-gray-700 mb-4">{t("location")} </p>
+          <p className="text-black font-semibold mb-4 text-[20px]">{t("Aname")}</p>
         </div>
         <div className="space-y-2 p-[5px]">
           <div className="flex flex-row justify-between">
-            <p className="text-gray-700">Администратор: </p>
+            <p className="text-gray-700">{t("admin")} </p>
             <p>+998 71 234 96 65</p>
           </div>
           <hr />
           <div className="flex flex-row justify-between p-[5px]">
-            <p className="text-gray-700">Наш gmail: </p>
+            <p className="text-gray-700">{t("gmail")} </p>
             <p>rayhon@gmail.com</p>
           </div>
           <hr />
@@ -129,6 +130,7 @@ export default function Onas() {
         </div>
         <hr />
       </div>
+
     </div>
   );
 }

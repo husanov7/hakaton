@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { setOrder } from "../../utils/zustand";
+import { useTranslation } from "react-i18next";
+
 
 const Cart = () => {
   const [quantity, setQuantity] = useState(1);
@@ -22,6 +24,8 @@ const Cart = () => {
 
   const { order } = setOrder();
   console.log(order);
+
+  const { t } = useTranslation("base");
 
   return (
     <>
@@ -61,15 +65,16 @@ const Cart = () => {
         })}
         <div>
           <p className="mb-1 p-[5px]">
-            Сумма заказа: {totalPrice.toLocaleString()} UZS
+            {t("price")} {totalPrice.toLocaleString()} UZS
           </p>
           <p className="mb-1 p-[5px]">
-            Обслуживание 10%: {serviceCharge.toLocaleString()} UZS
+          {t("servic")}  {serviceCharge.toLocaleString()} UZS
           </p>
           <p className="font-bold p-[5px]">
-            Итоговая сумма заказа: {finalPrice.toLocaleString()} UZS
+           {t("order")} {finalPrice.toLocaleString()} UZS
           </p>
         </div>
+ 
       </div>
     </>
   );

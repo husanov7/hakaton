@@ -1,8 +1,8 @@
  const about = {
-    name:"Qamish Xorazm taomlari",
-    serivce:"Hizmat",
-    password:"Wi-Fi paroli",
-    mode:"Ish Vaqtlari",
+    name:"Rayhon taomlari",
+    service:"Hizmat :",
+    password:"Wi-Fi paroli :",
+    mode:"Ish Vaqtlari :",
     send:"Biz bilan boglan",
     location:"Manzil:",
     Aname:"kocha. Mukumi 200",
