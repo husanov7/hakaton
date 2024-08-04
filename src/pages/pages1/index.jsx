@@ -52,8 +52,8 @@ export default function Onas() {
         </div>
         <div className="flex flex-col items-center">
           <div className="flex flex-row gap-[195px] justify-between mb-4">
-            <h1>{t("mode")}</h1>
-            <span>{selectedDay.time}</span>
+            <h1 >{t("mode")}</h1>
+            <span >{selectedDay.time}</span>
           </div>
           <div className="flex space-x-2 mb-4">
             {days.map((dayItem) => (

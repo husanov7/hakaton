@@ -1,82 +1,77 @@
 import { useState } from "react";
 import { setOrder } from "../../utils/zustand";
 import { useTranslation } from "react-i18next";
-
+import { api } from "../../axios";
 
 const Cart = () => {
-  const [quantity, setQuantity] = useState(1);
-  const price = 45000;
-  const serviceFee = 0.1;
-
-  const incrementQuantity = () => {
-    setQuantity(quantity + 1);
-  };
-
-  const decrementQuantity = () => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1);
-    }
-  };
-
-  const totalPrice = price * quantity;
-  const serviceCharge = totalPrice * serviceFee;
-  const finalPrice = totalPrice + serviceCharge;
-
-  const { order } = setOrder();
-  console.log(order);
-
+  const { order, delOrder } = setOrder();
   const { t } = useTranslation("base");
 
+  const getTableNumber = () => {
+    return localStorage.getItem("tableNumber") || 1;
+  };
+
+  
+  const all = order.reduce((sum, item) => sum + item.price * item.count, 0);
+  
+  
+  const serviceFee = 0.1; 
+  const serviceCharge = all * serviceFee;
+
+  const totalAmount = all + serviceCharge;
+
+  const placeOrder = () => {
+    const tableNumber = getTableNumber();
+    api.post("/zakaz", { menu: order, stol: tableNumber })
+      .then(() => {
+        delOrder();  
+      })
+      .catch((error) => {
+        console.error("Error placing order:", error);
+      });
+  };
+
   return (
-    <>
-      <div className="p-[10px]">
-        <h2 className="text-xl text-center font-bold mb-4">Корзина</h2>
+    <div className="p-4">
+      <div className="text-center">
+        <h2 className="text-xl font-bold mb-4">{t("cart_title", "Корзина")}</h2>
       </div>
-      <div className="p-4 max-w-md m-auto bg-white rounded-lg border-solid border-[1px] border-[] shadow-lg shadow-[#ccc]">
-        {order.map((dish) => {
-          return (
-            <div className="flex items-center mb-4">
-              <img
-                src="https://avatars.mds.yandex.net/i?id=b93ecc6734ad42feec9730a3a42ca448884bd1283ab973b0-12643411-images-thumbs&n=13"
-                alt="Product Image"
-                className="w-[150px] h-[120px] rounded-[20px] mr-4"
-              />
-              <div className="flex-1">
-                <h3 className="text-lg">{dish.title}</h3>
-                <p className="text-gray-500">{price.toLocaleString()} UZS</p>
-              </div>
-              <div className="flex items-center">
-                <button
-                  className="bg-gray-300 text-gray-700 p-[13px] py-1 rounded"
-                  onClick={decrementQuantity}
-                >
-                  -
-                </button>
-                <span className="mx-2">{quantity}</span>
-                <button
-                  className="bg-gray-300 text-gray-700 p-[13px] py-1 rounded"
-                  onClick={incrementQuantity}
-                >
-                  +
-                </button>
-              </div>
+      <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg p-4">
+        {order.map((dish, index) => (
+          <div key={index} className="flex items-center mb-4">
+            <img
+              src={dish.imageUrl}
+              alt={dish.title}
+              className="w-24 h-20 rounded-lg mr-4"
+            />
+            <div className="flex-1">
+              <h3 className="text-lg font-medium">{dish.title}</h3>
+              <p className="text-gray-500">{dish.count}</p>
+              <p className="text-gray-500">
+                {dish.price.toLocaleString()} UZS
+              </p>
             </div>
-          );
-        })}
-        <div>
-          <p className="mb-1 p-[5px]">
-            {t("price")} {totalPrice.toLocaleString()} UZS
+          </div>
+        ))}
+        <div className="mt-4">
+          <p className="mb-2">
+            {t("price", "Price")} {all.toLocaleString()} UZS
           </p>
-          <p className="mb-1 p-[5px]">
-          {t("servic")}  {serviceCharge.toLocaleString()} UZS
+          <p className="mb-2">
+            {t("servic", "Service Fee")} {serviceCharge.toLocaleString()} UZS
           </p>
-          <p className="font-bold p-[5px]">
-           {t("order")} {finalPrice.toLocaleString()} UZS
+          <p className="font-bold mb-4">
+            {t("order", "Total")} {totalAmount.toLocaleString()} UZS
           </p>
+          <button
+            onClick={placeOrder}
+            className="w-full bg-green-600 text-white py-2 rounded-md"
+          >
+            {t("order_button", "Place Order")}
+          </button>
         </div>
- 
       </div>
-    </>
+    </div>
   );
 };
 

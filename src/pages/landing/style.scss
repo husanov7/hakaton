@@ -11,10 +11,12 @@
     font-family: "Edu AU VIC WA NT Hand", cursive;
     color: green;
   }
+
   .cards {
+    gap: 20px;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
-    gap: 20px;
+
     .card {
       width: 300px;
       display: flex;
@@ -22,46 +24,75 @@
       box-shadow: 2px 4px 50px 0px rgba(34, 60, 80, 0.2);
       border-radius: 10px;
       padding: 10px;
-      .img{
+
+      .img {
         border-radius: 10px;
-        img{
-            width: 100%;
-            height: 100%;
-            border-radius: 10px;
+
+        img {
+          width: 100%;
+          height: 100%;
+          border-radius: 10px;
         }
       }
+
       .info {
         padding: 5px;
         display: flex;
         flex-direction: column;
         align-items: start;
         gap: 7px;
-        h1{
-            font-weight: 600;
+
+        h1 {
+          font-weight: 600;
+          font-size: 20px;
+        }
+
+        p {
+          width: 100% !important;
+          overflow: hidden;
+        }
+
+        .btns {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          gap: 10px;
+          justify-content: space-between;
+          width: 100%;
+
+          .heart {
+            margin-left: auto;
+          }
+
+          h2 {
+            color: green;
             font-size: 20px;
+            font-weight: 600;
+          }
         }
-        p{
-            width: 100% !important;
-            overflow: hidden;
-        }
-        .btns{
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            gap: 10px;
-            justify-content: space-between;
-            width: 100%;
-            .heart{
-                margin-left: auto;
-            }
-            h2{
-                color: green;
-                font-size: 20px;
-                font-weight: 600;
-            }
-        }
-        
+
       }
     }
+  }
+}
+
+
+.cards{
+  .add-to-order-button{
+    background-color: #004332;
+    color: white;
+    border-radius: 10px;
+  }
+}
+@media(max-width:750px) {
+  .cards {
+    grid-template-columns: 1fr 1fr !important;
+
+  }
+}
+
+@media(max-width:400px){
+  .cards{
+    grid-template-columns: 1fr !important;
   }
 }
