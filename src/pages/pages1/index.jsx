@@ -60,14 +60,14 @@ export default function Onas() {
               <button
                 key={dayItem.day}
                 onClick={() => setSelectedDay(dayItem)}
-                className={`py-2 px-4 rounded ${selectedDay.day === dayItem.day ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                className={`py-2 px-4 rounded ${selectedDay.day === dayItem.day ? 'bg-[#246253] text-white transition-all duration-500' : 'bg-gray-200'}`}
               >
                 {dayItem.day}
               </button>
             ))}
           </div>
           <div className="modal pt-[10px]">
-            <button className="w-[400px] bg-blue-500 text-[white] h-[45px] rounded-[20px]" onClick={handleOpen}>{t("send")}</button>
+            <button className="w-[400px]  bg-[#246253] text-[white] h-[45px] rounded-[20px]" onClick={handleOpen}>{t("send")}</button>
             <Dialog open={open} handler={handleOpen}>
               <DialogHeader>Massage</DialogHeader>
               <DialogBody className="gap-[20px] flex flex-col">

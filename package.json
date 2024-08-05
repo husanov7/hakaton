@@ -12,6 +12,7 @@
     "@material-tailwind/react": "2.1.8",
     "@react-sandbox/heart": "^1.1.0",
     "axios": "^1.7.2",
+    "build": "^0.1.4",
     "flag-icon-css": "^4.1.7",
     "font-awesome": "^4.7.0",
     "i18next": "^23.12.2",

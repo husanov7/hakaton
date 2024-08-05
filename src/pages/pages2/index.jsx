@@ -34,7 +34,7 @@ const Cart = () => {
   return (
     <div className="p-4">
       <div className="text-center">
-        <h2 className="text-xl font-bold mb-4">{t("cart_title", "Корзина")}</h2>
+        <h2 className="text-xl font-bold mb-4">{t("korzina", "Корзина")}</h2>
       </div>
       <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg p-4">
         {order.map((dish, index) => (
@@ -65,7 +65,7 @@ const Cart = () => {
           </p>
           <button
             onClick={placeOrder}
-            className="w-full bg-green-600 text-white py-2 rounded-md"
+            className="w-full bg-[#246253] text-white py-2 rounded-md"
           >
             {t("order_button", "Place Order")}
           </button>
