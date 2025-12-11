@@ -23,9 +23,9 @@
       background-size: cover; 
       background-position: center;
       overflow-x: hidden;
-      scrollbar-width: none;
+      // scrollbar-width: none;
       white-space: nowrap;
-      -webkit-overflow-scrolling: touch;
+      // -webkit-overflow-scrolling: touch;
     height: 100vh;
     width: 100vw;
     background-repeat: no-repeat;
@@ -62,6 +62,73 @@
     margin-right: 8px;
   }
   
+
+  .bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-around;
+  background: white;
+  padding: 10px 0;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+
+  a {
+    flex: 1;
+    text-decoration: none;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    color: black;
+    font-size: 24px;
+    transition: all 0.3s ease;
+    position: relative;
+
+    // Active holatdagi animatsiya
+    // &.active {
+    //   color: #004332; // Yashil rang
+    //   transform: scale(1.1);
+
+    //   // Yashil doira animatsiyasi
+    //   &::before {
+    //     content: '';
+    //     position: absolute;
+    //     width: 50px;
+    //     height: 50px;
+    //     background: #145444;
+    //     border-radius: 50%;
+    //     animation: pulse 1s infinite;
+    //     z-index: -1;
+    //   }
+    // }
+
+    &:hover {
+      color: #004332;
+    }
+  }
+}
+
+// Pulse animatsiyasi
+// @keyframes pulse {
+//   0% {
+//     transform: scale(1);
+//     opacity: 1;
+//   }
+//   50% {
+//     transform: scale(1.2);
+//     opacity: 0.7;
+//   }
+//   100% {
+//     transform: scale(1);
+//     opacity: 1;
+//   }
+// }
   @media (max-width:800px) {
     .all{
         width: 100%;
@@ -72,3 +139,4 @@
         }
     }
   }
+  

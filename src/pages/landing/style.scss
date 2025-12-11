@@ -1,98 +1,45 @@
 @import url("https://fonts.googleapis.com/css2?family=Dosis:wght@200..800&family=Edu+AU+VIC+WA+NT+Hand:wght@400..700&display=swap");
 
 .home {
-  width: 90%;
-  height: 100vh;
+  width: 100%;
+  min-height: 100vh;
   margin: 0 auto;
-
+  
   .title {
     text-align: center;
     width: 100%;
     font-size: 30px;
     font-family: "Edu AU VIC WA NT Hand", cursive;
     color: green;
-  
   }
+}
 
-  .cards {
-    gap: 20px;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    .card {
-      width: 300px;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 2px 4px 50px 0px rgba(34, 60, 80, 0.2);
-      border-radius: 10px;
-      padding: 10px;
-      .img {
-        border-radius: 10px;
-
-        img {
-          width: 100%;
-          height: 100%;
-          border-radius: 10px;
-        }
-      }
-
-      .info {
-        padding: 5px;
-        display: flex;
-        flex-direction: column;
-        align-items: start;
-        gap: 7px;
-
-        h1 {
-          font-weight: 600;
-          font-size: 20px;
-        }
-
-        p {
-          width: 100% !important;
-          overflow: hidden;
-        }
-
-        .btns {
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-          gap: 10px;
-          justify-content: space-between;
-          width: 100%;
-
-          .heart {
-            margin-left: auto;
-          }
-
-          h2 {
-            color: green;
-            font-size: 20px;
-            font-weight: 600;
-          }
-        }
-
-      }
-    }
+/* ✅ SCROLLBAR YASHIRISH */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  
+  &::-webkit-scrollbar {
+    display: none;
   }
 }
 
 
-.cards{
-  .add-to-order-button{
+/* ✅ CARD STILLAR - SCSS ichida kerak emas, chunki Tailwind ishlayapti */
+/* Lekin agar kerak bo'lsa: */
+.cards {
+  .add-to-order-button {
     background-color: #004332;
     color: white;
     border-radius: 10px;
-  }
-}
-@media(max-width:750px) {
-  .cards {
-    grid-template-columns: 1fr 1fr !important;
-
-  }
-}
-
-@media(max-width:400px){
-  .cards{
-    grid-template-columns: 1fr !important;
+    padding: 8px 16px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background-color: #003326;
+      transform: scale(1.05);
+    }
   }
 }
