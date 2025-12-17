@@ -16,9 +16,9 @@ export default function Card({ dish }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [quantity, setQuantity] = useState(1);
-
+  // ✅ QUYIDAGINI QO'SHING (getItemCount dan yuqorida)
+  const isOutOfStock = dish.outOfStock === true;
   const safeOrder = Array.isArray(order) ? order : [];
-  
   const getItemCount = () => {
     if (!dish.variants || dish.variants.length === 0) {
       const existingItem = safeOrder.find(item => item.id === dish.id);
@@ -34,6 +34,7 @@ export default function Card({ dish }) {
   const currentCount = getItemCount();
 
   const handleSimpleIncrement = () => {
+     if (isOutOfStock) return;
     if (currentCount === 0) {
       addItem(dish);
     } else {
@@ -48,10 +49,11 @@ export default function Card({ dish }) {
   };
 
   const handleVariantClick = () => {
-    setShowModal(true);
-    setSelectedVariant(null);
-    setQuantity(1);
-  };
+  if (isOutOfStock) return; // ✅ SHU QATORNI QO'SHING
+  setShowModal(true);
+  setSelectedVariant(null);
+  setQuantity(1);
+};
 
   const handleAddToCart = () => {
     if (!selectedVariant) {
@@ -107,18 +109,35 @@ export default function Card({ dish }) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        whileHover={{ y: -3 }}
+        whileHover={!isOutOfStock ? { y: -3 } : {}}
       >
-        <div className="bg-white w-full shadow-md rounded-xl overflow-hidden border border-gray-100 hover:shadow-xl transition-all duration-300">
+        <div className={`bg-white w-full shadow-md rounded-xl overflow-hidden border border-gray-100 transition-all duration-300 relative ${
+  isOutOfStock ? 'opacity-70' : 'hover:shadow-xl'
+}`}>
           {/* ✅ RASM - FIXED HEIGHT */}
         <div className="relative aspect-[4/3] bg-gray-100 overflow-hidden">
-  <img
-    className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-    src={imageError ? fallback : dish.imageUrl}
-    alt={dish.title}
-    onError={() => setImageError(true)}
-    loading="lazy"
-  />
+ <img
+  className={`w-full h-full object-cover transition-all duration-300 ${
+    isOutOfStock ? 'filter grayscale' : 'hover:scale-105'
+  }`}
+  src={imageError ? "/fallback.jpg" : dish.imageUrl}
+  alt={dish.title}
+  onError={() => setImageError(true)}
+  loading="lazy"
+/>
+   {isOutOfStock && (
+    <div className="absolute inset-0 bg-black bg-opacity-60 z-20 flex flex-col items-center justify-center p-4 rounded-xl">
+      <div className="bg-red-500 text-white px-6 py-3 rounded-full font-bold text-lg mb-3 shadow-lg animate-pulse">
+        ❌ TUGAB QOLDI
+      </div>
+      {/* <p className="text-white text-center text-xs  font-semibold leading-relaxed bg-black bg-opacity-50 px-4 py-2 rounded-lg">
+        😋 Bu ovqatimiz juda mazali bo'lgani uchun tugab qoldi!
+      </p> */}
+      <p className="text-white text-xs mt-2 opacity-80">
+        ⏰ Tez orada qayta tayyorlanadi
+      </p>
+    </div>
+  )}
           </div>
 
           {/* ✅ CONTENT - OPTIMIZED */}
@@ -140,12 +159,17 @@ export default function Card({ dish }) {
             {hasVariants ? (
               // VARIANTLI OVQAT
               <div className="space-y-2">
-                <button
-                  onClick={handleVariantClick}
-                  className="w-full py-2 bg-[#004332] text-white rounded-lg font-semibold hover:bg-[#00664a] transition text-xs sm:text-sm"
-                >
-                  🎨 Tanlash
-                </button>
+               <button
+  onClick={handleVariantClick}
+  disabled={isOutOfStock}
+  className={`w-full py-2 rounded-lg font-semibold transition text-xs sm:text-sm ${
+    isOutOfStock
+      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+      : 'bg-[#004332] text-white hover:bg-[#00664a]'
+  }`}
+>
+  {isOutOfStock ? '❌ Tugab qoldi' : '🎨 Tanlash'}
+</button>
 
                 {currentCount > 0 && (
                   <button

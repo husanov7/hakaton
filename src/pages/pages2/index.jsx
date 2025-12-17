@@ -1,5 +1,3 @@
-
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useOrderStore } from "../../utils/zustand";
@@ -32,40 +30,65 @@ const Cart = () => {
     0
   );
 
-  const serviceFee = 0.02;
+  const serviceFee = 0.05;
   const serviceCharge = all * serviceFee;
   const totalAmount = all + serviceCharge;
 
-  const handleTelegramPayment = () => {
+  // ✅ ONLINE TO'LOV (Click.uz yoki Payme)
+  const handleOnlinePayment = async () => {
     const tableNumber = getTableNumber();
-    const orderId = Date.now();
+    const orderId = `ORDER_${Date.now()}`;
     
-    let orderText = `🛒 *Yangi Buyurtma*\n\n`;
-    orderText += `📍 Stol: *${tableNumber}*\n`;
-    orderText += `🆔 Buyurtma ID: *${orderId}*\n\n`;
-    orderText += `📋 *Mahsulotlar:*\n`;
-    
-    order.forEach((item, index) => {
-      orderText += `${index + 1}. ${item.title}`;
-      
-      // ✅ Variant nomini qo'shish
-      if (item.variant) {
-        orderText += ` (${item.variant})`;
+    try {
+      // 1. Buyurtmani Firebase'ga saqlash
+      const formattedOrder = order.map((i) => ({
+        id: i.id || "no-id",
+        dishId: i.dishId || i.id,
+        title: i.title || "No title",
+        variant: i.variant || null,
+        variantId: i.variantId || null,
+        price: Number(i.price) || 0,
+        count: i.count || 1,
+        imageUrl: i.imageUrl || "",
+      }));
+
+      await sendOrder(
+        tableNumber, 
+        formattedOrder, 
+        "pending_payment",
+        totalAmount,
+        orderId
+      );
+
+      // 2. Backend'ga to'lov so'rovini yuborish
+      const response = await fetch('YOUR_BACKEND_URL/api/payment/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          orderId,
+          items: formattedOrder,
+          totalAmount,
+          tableNumber,
+          paymentMethod: 'online'
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // 3. Click.uz yoki Payme checkout'ga yo'naltirish
+        window.location.href = data.paymentUrl;
+      } else {
+        throw new Error(data.message || 'Payment failed');
       }
-      
-      orderText += `\n   ${item.count} x ${item.price.toLocaleString()} = ${(item.count * item.price).toLocaleString()} so'm\n`;
-    });
-    
-    orderText += `\n💰 *Jami:* ${totalAmount.toLocaleString()} so'm\n`;
-    orderText += `\n💳 To'lov: Telegram orqali`;
-    
-    const botUsername = "YOUR_BOT_USERNAME";
-    const telegramUrl = `https://t.me/${botUsername}?start=order_${orderId}`;
-    
-    navigator.clipboard.writeText(orderText);
-    window.open(telegramUrl, "_blank");
-    
-    alert("✅ Buyurtma ma'lumotlari nusxalandi!\n\nTelegram botga o'ting va to'lovni amalga oshiring.");
+
+    } catch (error) {
+      console.error("❌ Online to'lovda xato:", error);
+      alert("❌ To'lov tizimiga ulanishda xatolik: " + error.message);
+      setIsLoading(false);
+    }
   };
 
   const placeOrder = async () => {
@@ -78,10 +101,10 @@ const Cart = () => {
 
     const formattedOrder = order.map((i) => ({
       id: i.id || "no-id",
-      dishId: i.dishId || i.id, // ✅ Original dish ID
+      dishId: i.dishId || i.id,
       title: i.title || "No title",
-      variant: i.variant || null, // ✅ Variant nomi
-      variantId: i.variantId || null, // ✅ Variant ID
+      variant: i.variant || null,
+      variantId: i.variantId || null,
       price: Number(i.price) || 0,
       count: i.count || 1,
       imageUrl: i.imageUrl || "",
@@ -90,21 +113,21 @@ const Cart = () => {
     console.log("📦 Yuborilayotgan buyurtma:", formattedOrder);
 
     try {
+      // ✅ ONLINE TO'LOV TANLANGAN BO'LSA
+      if (paymentMethod === "online") {
+        await handleOnlinePayment();
+        return; // Payment gateway'ga yo'naltiriladi
+      }
+
+      // ✅ NAQD PUL (ESKI VARIANT)
       const orderId = await sendOrder(
         tableNumber, 
         formattedOrder, 
-        paymentMethod === "telegram" ? "pending_payment" : "unpaid",
+        "unpaid",
         totalAmount
       );
       
       console.log("✅ Buyurtma yuborildi! ID:", orderId);
-      
-      if (paymentMethod === "telegram") {
-        handleTelegramPayment();
-        setIsLoading(false);
-        alert("📱 Telegram orqali to'lovni amalga oshiring!");
-        return;
-      }
       
       clearOrder();
       setShowModal(true);
@@ -170,7 +193,6 @@ const Cart = () => {
                     <h3 className="text-base sm:text-lg font-semibold text-gray-800 break-words mb-1">
                       {dish.title}
                       
-                      {/* ✅ VARIANT NOMI */}
                       {dish.variant && (
                         <span className="ml-2 text-sm bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-medium">
                           🎨 {dish.variant}
@@ -181,7 +203,6 @@ const Cart = () => {
                     <p className="text-sm sm:text-base text-gray-600 font-medium mb-3">
                       {Number(dish.price).toLocaleString()} so'm
                       
-                      {/* ✅ JAMI NARX (count * price) */}
                       {dish.count > 1 && (
                         <span className="text-[#004332] font-bold ml-2">
                           = {(dish.count * dish.price).toLocaleString()} so'm
@@ -222,7 +243,7 @@ const Cart = () => {
               ))}
             </div>
 
-            {/* TO'LOV USULINI TANLASH */}
+            {/* ✅ TO'LOV USULINI TANLASH - YANGILANGAN */}
             <div className="mb-6 p-4 bg-gray-50 rounded-lg">
               <h3 className="font-semibold text-gray-800 mb-3 text-base sm:text-lg">
                 💳 To'lov usuli:
@@ -248,46 +269,66 @@ const Cart = () => {
                   </div>
                 </label>
 
-                {/* Telegram */}
+                {/* ✅ ONLINE TO'LOV (Click.uz / Payme) */}
                 <label 
                   className="flex items-center gap-3 p-3 bg-white rounded-lg border-2 cursor-pointer transition hover:border-[#004332]"
-                  style={{ borderColor: paymentMethod === "telegram" ? "#004332" : "#e5e7eb" }}
+                  style={{ borderColor: paymentMethod === "online" ? "#004332" : "#e5e7eb" }}
                 >
                   <input
                     type="radio"
                     name="payment"
-                    value="telegram"
-                    checked={paymentMethod === "telegram"}
+                    value="online"
+                    checked={paymentMethod === "online"}
                     onChange={(e) => setPaymentMethod(e.target.value)}
                     className="w-5 h-5 accent-[#004332]"
                   />
                   <div className="flex-1 flex items-center justify-between">
                     <div>
-                      <p className="font-semibold text-gray-800">📱 Telegram orqali</p>
-                      <p className="text-sm text-gray-500">Kartaga o'tkazish</p>
+                      <p className="font-semibold text-gray-800">💳 Online to'lov</p>
+                      <p className="text-sm text-gray-500">Karta orqali (Click / Payme)</p>
                     </div>
-                    <div className="text-3xl">💬</div>
+                    <div className="flex gap-2">
+                      <div className="text-2xl">💳</div>
+                    </div>
                   </div>
                 </label>
               </div>
 
-              {paymentMethod === "telegram" && (
-                <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              {/* ✅ ONLINE TO'LOV MA'LUMOTI */}
+              {paymentMethod === "online" && (
+                <div className="mt-4 p-3 bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-lg">
                   <p className="text-sm text-blue-800 mb-2">
-                    📌 <strong>Telegram orqali to'lov:</strong>
+                    📌 <strong>Online to'lov:</strong>
                   </p>
                   <ol className="text-xs text-blue-700 space-y-1 ml-4 list-decimal">
-                    <li>Telegram botimizga xabar yuboriladi</li>
-                    <li>Karta raqamini olasiz</li>
-                    <li>Pulni o'tkazasiz</li>
-                    <li>Screenshot yuborasiz</li>
-                    <li>Buyurtma tasdiqlanadi ✅</li>
+                    <li>Xavfsiz to'lov sahifasiga o'tasiz</li>
+                    <li>Karta ma'lumotlarini kiritasiz</li>
+                    <li>SMS kod orqali tasdiqlaсiz</li>
+                    <li>To'lov muvaffaqiyatli amalga oshiriladi ✅</li>
+                    <li>Buyurtma darhol oshxonaga yuboriladi 🍽️</li>
                   </ol>
+                  
+                  <div className="mt-3 flex items-center gap-2 text-xs text-gray-600">
+                    <span className="text-green-600">🔒</span>
+                    <span>SSL shifrlangan xavfsiz to'lov</span>
+                  </div>
+                  
+                  {/* To'lov tizimlari logotiplari */}
+                  <div className="mt-3 pt-3 border-t border-blue-200 flex items-center gap-3 flex-wrap">
+                    <span className="text-xs text-gray-600">Qo'llab-quvvatlanadi:</span>
+                    <div className="flex gap-2 items-center">
+                      <span className="text-xs bg-white px-2 py-1 rounded border">Click</span>
+                      <span className="text-xs bg-white px-2 py-1 rounded border">Payme</span>
+                      <span className="text-xs bg-white px-2 py-1 rounded border">💳 Visa</span>
+                      <span className="text-xs bg-white px-2 py-1 rounded border">💳 Uzcard</span>
+                      <span className="text-xs bg-white px-2 py-1 rounded border">💳 Humo</span>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
 
-            {/* ✅ BUYURTMA XULOSASI (Variantlar bilan) */}
+            {/* BUYURTMA XULOSASI */}
             <div className="mb-6 p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
               <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
                 📋 Buyurtma xulosasi
@@ -324,7 +365,7 @@ const Cart = () => {
               </div>
               
               <div className="flex justify-between text-gray-700">
-                <span className="text-sm sm:text-base">{t("service", "Xizmat haqi")} (2%):</span>
+                <span className="text-sm sm:text-base">{t("service", "Xizmat haqi")} (5%):</span>
                 <span className="font-semibold text-sm sm:text-base">
                   {serviceCharge.toLocaleString()} so'm
                 </span>
@@ -339,6 +380,7 @@ const Cart = () => {
                 </span>
               </div>
 
+              {/* ✅ BUYURTMA BERISH TUGMASI - YANGILANGAN */}
               <button
                 onClick={placeOrder}
                 disabled={isLoading}
@@ -349,8 +391,8 @@ const Cart = () => {
                     <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                     Yuklanmoqda...
                   </span>
-                ) : paymentMethod === "telegram" ? (
-                  "📱 Telegram orqali to'lash"
+                ) : paymentMethod === "online" ? (
+                  "💳 Online to'lash"
                 ) : (
                   t("order_button", "✅ Buyurtma berish")
                 )}
@@ -429,4 +471,3 @@ const Cart = () => {
 };
 
 export default Cart;
-

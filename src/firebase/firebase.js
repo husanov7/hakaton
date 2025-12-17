@@ -37,17 +37,16 @@ export const fetchMenu = async () => {
     const snapshot = await getDocs(collection(db, "dishes"));
     const dishes = snapshot.docs.map(doc => {
       const data = doc.data();
-      console.log("📋 Ovqat:", doc.id, "Category:", data.category); // Debug
       return {
         id: doc.id,
         title: data.title || "No title",
         price: Number(data.price) || 0,
         imageUrl: data.imageUrl || "",
         description: data.description || "",
-        category: data.category || "ovqatlar", // Default category
+        category: data.category || "ovqatlar",
+        outOfStock: data.outOfStock || false, // ✅ MANA SHU YETISHMAYOTGANDI
       };
     });
-    console.log("✅ Jami ovqatlar:", dishes.length);
     return dishes;
   } catch (error) {
     console.error("Menu olishda xato:", error);
