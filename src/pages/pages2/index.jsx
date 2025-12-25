@@ -10,7 +10,7 @@ const Cart = () => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState("cash");
+  const [paymentMethod, setPaymentMethod] = useState("cash"); // cash yoki online
   
   const getTableNumber = () => {
     const params = new URLSearchParams(window.location.search);
@@ -30,72 +30,16 @@ const Cart = () => {
     0
   );
 
-  const serviceFee = 0.05;
+  const serviceFee = 0.02; // 2% xizmat haqi
   const serviceCharge = all * serviceFee;
   const totalAmount = all + serviceCharge;
 
-  // ✅ ONLINE TO'LOV (Click.uz yoki Payme)
-  const handleOnlinePayment = async () => {
-    const tableNumber = getTableNumber();
-    const orderId = `ORDER_${Date.now()}`;
-    
-    try {
-      // 1. Buyurtmani Firebase'ga saqlash
-      const formattedOrder = order.map((i) => ({
-        id: i.id || "no-id",
-        dishId: i.dishId || i.id,
-        title: i.title || "No title",
-        variant: i.variant || null,
-        variantId: i.variantId || null,
-        price: Number(i.price) || 0,
-        count: i.count || 1,
-        imageUrl: i.imageUrl || "",
-      }));
-
-      await sendOrder(
-        tableNumber, 
-        formattedOrder, 
-        "pending_payment",
-        totalAmount,
-        orderId
-      );
-
-      // 2. Backend'ga to'lov so'rovini yuborish
-      const response = await fetch('YOUR_BACKEND_URL/api/payment/create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          orderId,
-          items: formattedOrder,
-          totalAmount,
-          tableNumber,
-          paymentMethod: 'online'
-        })
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        // 3. Click.uz yoki Payme checkout'ga yo'naltirish
-        window.location.href = data.paymentUrl;
-      } else {
-        throw new Error(data.message || 'Payment failed');
-      }
-
-    } catch (error) {
-      console.error("❌ Online to'lovda xato:", error);
-      alert("❌ To'lov tizimiga ulanishda xatolik: " + error.message);
-      setIsLoading(false);
-    }
-  };
-
+  // ✅ BUYURTMA BERISH
   const placeOrder = async () => {
     const tableNumber = getTableNumber();
     console.log("📤 Buyurtma berilmoqda...");
     console.log("📍 Stol raqami:", tableNumber);
-    console.log("🛒 Ovqatlar soni:", order.length);
+    console.log("💳 To'lov usuli:", paymentMethod);
     
     setIsLoading(true);
 
@@ -110,32 +54,36 @@ const Cart = () => {
       imageUrl: i.imageUrl || "",
     }));
 
-    console.log("📦 Yuborilayotgan buyurtma:", formattedOrder);
-
     try {
-      // ✅ ONLINE TO'LOV TANLANGAN BO'LSA
-      if (paymentMethod === "online") {
-        await handleOnlinePayment();
-        return; // Payment gateway'ga yo'naltiriladi
-      }
-
-      // ✅ NAQD PUL (ESKI VARIANT)
+      // ✅ BUYURTMANI FIREBASE'GA YUBORISH
       const orderId = await sendOrder(
         tableNumber, 
         formattedOrder, 
-        "unpaid",
-        totalAmount
+        paymentMethod === "cash" ? "pending_payment" : "unpaid", // Naqd uchun to'lov kutiladi
+        totalAmount,
+        null, // orderId
+        paymentMethod // ✅ To'lov usulini yuborish
       );
       
       console.log("✅ Buyurtma yuborildi! ID:", orderId);
       
+      // Korzinani tozalash
       clearOrder();
+      
+      // Muvaffaqiyat modalini ko'rsatish
       setShowModal(true);
       setIsLoading(false);
       
+      // 3 sekunddan keyin
       setTimeout(() => {
-        navigate(`/?table=${tableNumber}`);
-      }, 2500);
+        if (paymentMethod === "online") {
+          // ✅ Online to'lov uchun /pages1 ga o'tish (OrderHistory)
+          navigate(`/pages1?table=${tableNumber}`);
+        } else {
+          // Naqd pul uchun bosh sahifaga qaytish
+          navigate(`/?table=${tableNumber}`);
+        }
+      }, 3000);
     } catch (error) {
       console.error("❌ Buyurtma yuborishda xato:", error);
       setIsLoading(false);
@@ -175,6 +123,7 @@ const Cart = () => {
           </div>
         ) : (
           <>
+            {/* OVQATLAR RO'YXATI */}
             <div className="space-y-4 mb-6">
               {order.map((dish) => (
                 <div 
@@ -243,10 +192,10 @@ const Cart = () => {
               ))}
             </div>
 
-            {/* ✅ TO'LOV USULINI TANLASH - YANGILANGAN */}
+            {/* ✅ TO'LOV USULINI TANLASH */}
             <div className="mb-6 p-4 bg-gray-50 rounded-lg">
               <h3 className="font-semibold text-gray-800 mb-3 text-base sm:text-lg">
-                💳 To'lov usuli:
+                💳 To'lov usulini tanlang:
               </h3>
               
               <div className="space-y-3">
@@ -265,11 +214,11 @@ const Cart = () => {
                   />
                   <div className="flex-1">
                     <p className="font-semibold text-gray-800">💵 Naqd pul</p>
-                    <p className="text-sm text-gray-500">Ofitsiantga to'lov</p>
+                    <p className="text-sm text-gray-500">Kassada to'laysiz</p>
                   </div>
                 </label>
 
-                {/* ✅ ONLINE TO'LOV (Click.uz / Payme) */}
+                {/* Online to'lov */}
                 <label 
                   className="flex items-center gap-3 p-3 bg-white rounded-lg border-2 cursor-pointer transition hover:border-[#004332]"
                   style={{ borderColor: paymentMethod === "online" ? "#004332" : "#e5e7eb" }}
@@ -282,48 +231,31 @@ const Cart = () => {
                     onChange={(e) => setPaymentMethod(e.target.value)}
                     className="w-5 h-5 accent-[#004332]"
                   />
-                  <div className="flex-1 flex items-center justify-between">
-                    <div>
-                      <p className="font-semibold text-gray-800">💳 Online to'lov</p>
-                      <p className="text-sm text-gray-500">Karta orqali (Click / Payme)</p>
-                    </div>
-                    <div className="flex gap-2">
-                      <div className="text-2xl">💳</div>
-                    </div>
+                  <div className="flex-1">
+                    <p className="font-semibold text-gray-800">💳 Online to'lov</p>
+                    <p className="text-sm text-gray-500">Click orqali to'lash</p>
                   </div>
                 </label>
               </div>
 
-              {/* ✅ ONLINE TO'LOV MA'LUMOTI */}
-              {paymentMethod === "online" && (
-                <div className="mt-4 p-3 bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-lg">
-                  <p className="text-sm text-blue-800 mb-2">
-                    📌 <strong>Online to'lov:</strong>
+              {/* ✅ TO'LOV MA'LUMOTI */}
+              {paymentMethod === "cash" ? (
+                <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                  <p className="text-sm text-yellow-800 font-semibold mb-1">
+                    💡 Naqd to'lov
                   </p>
-                  <ol className="text-xs text-blue-700 space-y-1 ml-4 list-decimal">
-                    <li>Xavfsiz to'lov sahifasiga o'tasiz</li>
-                    <li>Karta ma'lumotlarini kiritasiz</li>
-                    <li>SMS kod orqali tasdiqlaсiz</li>
-                    <li>To'lov muvaffaqiyatli amalga oshiriladi ✅</li>
-                    <li>Buyurtma darhol oshxonaga yuboriladi 🍽️</li>
-                  </ol>
-                  
-                  <div className="mt-3 flex items-center gap-2 text-xs text-gray-600">
-                    <span className="text-green-600">🔒</span>
-                    <span>SSL shifrlangan xavfsiz to'lov</span>
-                  </div>
-                  
-                  {/* To'lov tizimlari logotiplari */}
-                  <div className="mt-3 pt-3 border-t border-blue-200 flex items-center gap-3 flex-wrap">
-                    <span className="text-xs text-gray-600">Qo'llab-quvvatlanadi:</span>
-                    <div className="flex gap-2 items-center">
-                      <span className="text-xs bg-white px-2 py-1 rounded border">Click</span>
-                      <span className="text-xs bg-white px-2 py-1 rounded border">Payme</span>
-                      <span className="text-xs bg-white px-2 py-1 rounded border">💳 Visa</span>
-                      <span className="text-xs bg-white px-2 py-1 rounded border">💳 Uzcard</span>
-                      <span className="text-xs bg-white px-2 py-1 rounded border">💳 Humo</span>
-                    </div>
-                  </div>
+                  <p className="text-xs text-yellow-700">
+                    Buyurtma tayyorlangandan so'ng kassaga kelib to'lov qilasiz
+                  </p>
+                </div>
+              ) : (
+                <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-sm text-blue-800 font-semibold mb-1">
+                    💳 Online to'lov (Mock Click)
+                  </p>
+                  <p className="text-xs text-blue-700">
+                    Buyurtma berilgandan so'ng "Buyurtmalar tarixi" sahifasida to'lov qilasiz
+                  </p>
                 </div>
               )}
             </div>
@@ -365,7 +297,7 @@ const Cart = () => {
               </div>
               
               <div className="flex justify-between text-gray-700">
-                <span className="text-sm sm:text-base">{t("service", "Xizmat haqi")} (5%):</span>
+                <span className="text-sm sm:text-base">{t("service", "Xizmat haqi")} (2%):</span>
                 <span className="font-semibold text-sm sm:text-base">
                   {serviceCharge.toLocaleString()} so'm
                 </span>
@@ -380,21 +312,22 @@ const Cart = () => {
                 </span>
               </div>
 
-              {/* ✅ BUYURTMA BERISH TUGMASI - YANGILANGAN */}
+              {/* ✅ BUYURTMA BERISH TUGMASI */}
               <button
                 onClick={placeOrder}
                 disabled={isLoading}
-                className="w-full bg-[#004332] hover:bg-[#003326] text-white py-3 sm:py-4 rounded-lg font-semibold transition mt-4 disabled:opacity-50 disabled:cursor-not-allowed text-base sm:text-lg"
+                className="w-full bg-[#004332] hover:bg-[#003326] text-white py-3 sm:py-4 rounded-lg font-semibold transition mt-4 disabled:opacity-50 disabled:cursor-not-allowed text-base sm:text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
               >
                 {isLoading ? (
                   <span className="flex items-center justify-center gap-2">
                     <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                     Yuklanmoqda...
                   </span>
-                ) : paymentMethod === "online" ? (
-                  "💳 Online to'lash"
                 ) : (
-                  t("order_button", "✅ Buyurtma berish")
+                  <span className="flex items-center justify-center gap-2">
+                    <span>✅</span>
+                    <span>{t("order_button", "Buyurtma berish")}</span>
+                  </span>
                 )}
               </button>
             </div>
@@ -417,17 +350,16 @@ const Cart = () => {
             <h3 className="text-xl sm:text-2xl font-bold text-[#004332] mb-2">
               Buyurtma yuborildi!
             </h3>
-            <p className="text-gray-600 mb-4 text-sm sm:text-base">
-              Tez orada tayyorlanadi
+            <p className="text-gray-600 mb-2 text-sm sm:text-base">
+              {paymentMethod === "cash" ? "💵 Kassada to'lov qilasiz" : "💳 Endi to'lov qilishingiz mumkin"}
+            </p>
+            <p className="text-xs text-gray-500 mb-4">
+              {paymentMethod === "online" && "Buyurtmalar tarixiga o'tilmoqda..."}
             </p>
 
             <div className="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
               <div className="bg-[#004332] h-full rounded-full animate-progress-bar"></div>
             </div>
-            
-            <p className="text-xs sm:text-sm text-gray-500 mt-3">
-              Bosh sahifaga o'tilmoqda...
-            </p>
           </div>
         </div>
       )}
@@ -463,7 +395,7 @@ const Cart = () => {
         }
 
         .animate-progress-bar {
-          animation: progress-bar 2.5s linear;
+          animation: progress-bar 3s linear;
         }
       `}</style>
     </div>

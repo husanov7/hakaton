@@ -9,7 +9,7 @@ import OrderHistory from "./pages/pages1";
 import Cart from "./pages/pages2";
 import Home from "./pages/landing";
 import Kassa from "./components/Kassa/Kassa";
-
+import PaymentHistory from "./pages/PaymentHistory/PaymentHistory";
 // Routes ichida:
 <Route path="/order-history" element={<OrderHistory />} />
 export default function App() {
@@ -27,7 +27,7 @@ export default function App() {
         {/* <Route path="/pages1" element={<Onas />} /> */}
         <Route path="/pages2" element={<Cart />} />
         <Route path="/pages1" element={<OrderHistory />} />
-
+          <Route path="/payment-history" element={<PaymentHistory />} />
       </Routes>
 
       <div className="bottom-nav m-auto">
