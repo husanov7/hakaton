@@ -244,18 +244,18 @@ const Cart = () => {
                   <p className="text-sm text-yellow-800 font-semibold mb-1">
                     💡 Naqd to'lov
                   </p>
-                  <p className="text-xs text-yellow-700">
-                    Buyurtma tayyorlangandan so'ng kassaga kelib to'lov qilasiz
-                  </p>
+                  <p className="text-xs text-yellow-700 break-words whitespace-normal">
+  Buyurtma tayyorlangandan so'ng kassaga kelib to'lov qilasiz
+</p>
                 </div>
               ) : (
                 <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                   <p className="text-sm text-blue-800 font-semibold mb-1">
-                    💳 Online to'lov (Mock Click)
+                    💳 Online to'lov 
                   </p>
-                  <p className="text-xs text-blue-700">
-                    Buyurtma berilgandan so'ng "Buyurtmalar tarixi" sahifasida to'lov qilasiz
-                  </p>
+                  <p className="text-xs text-blue-700 break-words whitespace-normal">
+  Buyurtma berilgandan so'ng "Buyurtmalar tarixi" sahifasida to'lov qilasiz
+</p>
                 </div>
               )}
             </div>

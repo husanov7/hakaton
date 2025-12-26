@@ -247,7 +247,7 @@ const OrderHistory = () => {
               
               <div className="mt-4 flex items-center gap-2 text-sm opacity-90">
                 <i className="fa-solid fa-receipt"></i>
-                <span>{orders.length} ta buyurtma • Stol #{tableNumber}</span>
+                <span>{orders.length} ta buyurtma • Stol {tableNumber}</span>
               </div>
             </div>
 
@@ -272,7 +272,8 @@ const OrderHistory = () => {
                           {formatDate(order.createdAt)}
                         </p>
                         <p className="text-sm font-semibold text-gray-700">
-                          Buyurtma #{order.id.slice(-6)}
+                          Buyurtma 
+                          {/* {order.id.slice(-6)} */}
                         </p>
                       </div>
                       {getStatusBadge(order.paymentStatus || order.status, order.paymentMethod)}
@@ -389,7 +390,7 @@ const OrderHistory = () => {
                   <div className="bg-gray-50 rounded-lg p-4">
                     <p className="text-sm font-semibold text-gray-800 mb-3 flex items-center gap-2">
                       <span>📱</span>
-                      <span>Quyidagi ilovalar orqali to'lashingiz mumkin:</span>
+                      <span className="break-words whitespace-normal">Quyidagi ilovalar orqali to'lashingiz mumkin:</span>
                     </p>
                     
                     <div className="grid grid-cols-2 gap-3">
@@ -425,7 +426,7 @@ const OrderHistory = () => {
 
                   {/* Qo'shimcha ma'lumot */}
                   <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                    <p className="text-xs text-blue-800 leading-relaxed">
+                    <p className="text-xs text-blue-800 leading-relaxed break-words whitespace-normal">
                       <span className="font-bold">💡 Eslatma:</span> To'lovni amalga oshirgandan so'ng, 
                       chekni kassaga ko'rsatishingiz kerak. To'lov tasdiqlanishi 5-10 daqiqa vaqt olishi mumkin.
                     </p>
