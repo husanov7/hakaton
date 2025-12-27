@@ -445,7 +445,7 @@ const OrderHistory = () => {
                       <p className="text-sm font-bold text-yellow-900 mb-1">
                         Naqd to'lov buyurtmasi
                       </p>
-                      <p className="text-xs text-yellow-800">
+                      <p className="text-xs text-yellow-800 break-words whitespace-normal">
                         Buyurtma tayyor bo'lgandan so'ng kassaga kelib to'lov qilasiz. 
                         To'lov summasi: <span className="font-bold">{grandTotal.toLocaleString()} so'm</span>
                       </p>
