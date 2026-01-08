@@ -11,7 +11,7 @@ const OrderHistory = () => {
   const location = useLocation();
 
   const tableNumber = getTableNumber();
-  const SERVICE_FEE_RATE = 0.02;
+  const SERVICE_FEE_RATE = 0.05;
 
   // ✅ RESTORAN KARTA RAQAMI
   const RESTAURANT_CARD = "5614681215681945";
@@ -318,7 +318,7 @@ const OrderHistory = () => {
                       </div>
                       
                       <div className="flex justify-between items-center text-xs text-gray-600">
-                        <span>Xizmat (2%):</span>
+                        <span>Xizmat (5%):</span>
                         <span>{serviceFee.toLocaleString()} so'm</span>
                       </div>
                       

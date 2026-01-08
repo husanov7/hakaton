@@ -30,7 +30,7 @@ const Cart = () => {
     0
   );
 
-  const serviceFee = 0.02; // 2% xizmat haqi
+  const serviceFee = 0.05; // 2% xizmat haqi
   const serviceCharge = all * serviceFee;
   const totalAmount = all + serviceCharge;
 
@@ -297,7 +297,7 @@ const Cart = () => {
               </div>
               
               <div className="flex justify-between text-gray-700">
-                <span className="text-sm sm:text-base">{t("service", "Xizmat haqi")} (2%):</span>
+                <span className="text-sm sm:text-base">{t("service", "Xizmat haqi")} (5%):</span>
                 <span className="font-semibold text-sm sm:text-base">
                   {serviceCharge.toLocaleString()} so'm
                 </span>
