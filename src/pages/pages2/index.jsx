@@ -139,15 +139,17 @@ const Cart = () => {
                   )}
                   
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-base sm:text-lg font-semibold text-gray-800 break-words mb-1">
-                      {dish.title}
-                      
-                      {dish.variant && (
-                        <span className="ml-2 text-sm bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-medium">
-                          🎨 {dish.variant}
-                        </span>
-                      )}
-                    </h3>
+                    <div className="mb-1">
+  <h3 className="text-base sm:text-lg font-semibold text-gray-800 break-words">
+    {dish.title}
+  </h3>
+
+  {dish.variant && (
+    <span className="mt-1 inline-flex max-w-full items-start gap-1 text-sm bg-blue-100 text-blue-700 px-2 py-1 rounded-lg font-medium break-words whitespace-normal">
+      🎨 <span className="break-words whitespace-normal">{dish.variant}</span>
+    </span>
+  )}
+</div>
                     
                     <p className="text-sm sm:text-base text-gray-600 font-medium mb-3">
                       {Number(dish.price).toLocaleString()} so'm
@@ -268,21 +270,27 @@ const Cart = () => {
               
               <div className="space-y-2 text-sm">
                 {order.map((item, index) => (
-                  <div key={item.id} className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <span className="text-gray-700">
-                        {index + 1}. {item.title}
-                        {item.variant && (
-                          <span className="text-blue-600 font-medium ml-1">
-                            ({item.variant})
-                          </span>
-                        )}
-                      </span>
-                    </div>
-                    <span className="text-gray-600 ml-2 whitespace-nowrap">
-                      {item.count} x {item.price.toLocaleString()} so'm
-                    </span>
-                  </div>
+                  <div key={item.id} className="flex items-start gap-3">
+  {/* Chap: matn */}
+  <div className="flex-1 min-w-0">
+    <p className="text-gray-700 break-words whitespace-normal">
+      {index + 1}. {item.title}
+      {item.variant && (
+        <span className="text-blue-600 font-medium ml-1 break-words whitespace-normal">
+          ({item.variant})
+        </span>
+      )}
+    </p>
+  </div>
+
+  {/* O‘ng: narx */}
+  <div className="flex-shrink-0 text-right">
+    <p className="text-gray-600 whitespace-nowrap">
+      {item.count} x {Number(item.price).toLocaleString()} so'm
+    </p>
+  </div>
+</div>
+
                 ))}
               </div>
             </div>
