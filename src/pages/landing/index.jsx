@@ -41,13 +41,11 @@ const MoidaBarakaLogo = ({ size = "normal" }) => {
       </g>
       
       {/* Text: Moida Baraka */}
-    <g transform="translate(55, 35)">
-  <text fontFamily="Georgia, serif" fontSize="24" fontWeight="700" fill="#004332">
-    Moida <tspan fontWeight="400" fill="#00664a">Baraka</tspan>
-  </text>
-</g>
-
-
+      <g transform="translate(55, 35)">
+        <text fontFamily="Georgia, serif" fontSize="24" fontWeight="700" fill="#004332">
+          Moida <tspan fontWeight="400" fill="#00664a">Baraka</tspan>
+        </text>
+      </g>
     </svg>
   );
 };
@@ -103,6 +101,19 @@ export default function Home() {
       try {
         const data = await fetchMenu();
         console.log("🍽️ Menyu yuklandi:", data.length, "ta ovqat");
+        
+        // ✅ TO'G'RI: data dan variantlarni tekshirish
+        const withVariants = data.filter(d => Array.isArray(d.variants) && d.variants.length > 0);
+        console.log("✅ Variantli ovqatlar:", withVariants.length);
+        
+        // ✅ DEBUG: Variantli ovqatlarning batafsil ma'lumotini ko'rsatish
+        if (withVariants.length > 0) {
+          console.log("📋 Variantli ovqatlar ro'yxati:");
+          withVariants.forEach(dish => {
+            console.log(`  - ${dish.title}:`, dish.variants);
+          });
+        }
+
         setMenu(data);
       } catch (err) {
         console.error("❌ Menyu olishda xato:", err);
@@ -112,6 +123,17 @@ export default function Home() {
     };
     getMenu();
   }, []);
+
+  // ✅ QO'SHIMCHA DEBUG: Menu state yangilangandan keyin
+  useEffect(() => {
+    if (menu.length > 0) {
+      const osh = menu.find(d => d.title === "Osh");
+      if (osh) {
+        console.log("🍚 OSH FULL OBJECT:", osh);
+        console.log("🎨 OSH VARIANTS:", osh.variants);
+      }
+    }
+  }, [menu]);
 
   const filteredMenu = selectedCategory === "all"
     ? menu

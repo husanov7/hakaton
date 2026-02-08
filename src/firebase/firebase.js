@@ -1,227 +1,175 @@
-// // src/Utils/firebase/firebase.js
-// import { initializeApp } from "firebase/app";
-// import { getAnalytics } from "firebase/analytics";
-// import { 
-//   getFirestore, 
-//   collection, 
-//   getDocs, 
-//   addDoc, 
-//   doc, 
-//   deleteDoc,
-//   serverTimestamp
-// } from "firebase/firestore";
-// import { getStorage } from "firebase/storage";
-
-// // Firebase konfiguratsiyasi
-// const firebaseConfig = {
-//   apiKey: "AIzaSyAeirbtct_3GK0o8QhF_h3y_GrvflpO5Xo",
-//   authDomain: "qrmenu-a61b8.firebaseapp.com",
-//   projectId: "qrmenu-a61b8",
-//   storageBucket: "qrmenu-a61b8.firebasestorage.app",
-//   messagingSenderId: "931352270385",
-//   appId: "1:931352270385:web:ecec29a1d9a28ff058e710",
-//   measurementId: "G-JQC8PV9LGJ",
-// };
-
-// // Firebase ilovasini ishga tushirish
-// const app = initializeApp(firebaseConfig);
-
-// // Export
-// export const analytics = getAnalytics(app);
-// export const db = getFirestore(app);
-// export const storage = getStorage(app);
-
-// // Menyu olish
-// export const fetchMenu = async () => {
-//   try {
-//     const snapshot = await getDocs(collection(db, "dishes"));
-//     const dishes = snapshot.docs.map(doc => {
-//       const data = doc.data();
-//       return {
-//         id: doc.id,
-//         title: data.title || "No title",
-//         price: Number(data.price) || 0,
-//         imageUrl: data.imageUrl || "",
-//         description: data.description || "",
-//         category: data.category || "ovqatlar",
-//         outOfStock: data.outOfStock || false, // ✅ MANA SHU YETISHMAYOTGANDI
-//       };
-//     });
-//     return dishes;
-//   } catch (error) {
-//     console.error("Menu olishda xato:", error);
-//     return [];
-//   }
-// };
-
-// // ✅ YANGILANGAN - To'lov statusli buyurtma yuborish
-// export const sendOrder = async (tableNumber, items, paymentStatus = "unpaid", totalAmount = 0) => {
-//   try {
-//     if (!items || items.length === 0) {
-//       throw new Error("Buyurtma bo'sh!");
-//     }
-
-//     console.log("📤 Buyurtma yuborilmoqda:", {
-//       table: tableNumber,
-//       items: items.length + " ta ovqat",
-//       paymentStatus: paymentStatus,
-//       totalAmount: totalAmount
-//     });
-
-//     const orderData = {
-//       table: String(tableNumber), // ← String sifatida (OrderHistory'da filter uchun)
-//       items: items.map((i) => ({
-//         id: i.id || "no-id",
-//         title: i.title || "No title",
-//         price: Number(i.price) || 0,
-//         count: Number(i.count) || 1,
-//         imageUrl: i.imageUrl || "",
-//       })),
-//       status: "pending",
-//       paymentStatus: paymentStatus, // ← YANGI: unpaid, pending_payment, paid
-//       totalAmount: totalAmount,      // ← YANGI: jami summa
-//       createdAt: serverTimestamp(),
-//     };
-
-//     const docRef = await addDoc(collection(db, "orders"), orderData);
-//     console.log("✅ Buyurtma yuborildi! ID:", docRef.id);
-//     return docRef.id;
-//   } catch (error) {
-//     console.error("❌ Buyurtma yuborishda xato:", error);
-//     throw error;
-//   }
-// };
-
-// // Taomni o'chirish
-// export const deleteDish = async (id) => {
-//   try {
-//     await deleteDoc(doc(db, "dishes", id));
-//     console.log("✅ Ovqat o'chirildi");
-//   } catch (error) {
-//     console.error("❌ O'chirishda xato:", error);
-//     throw error;
-//   }
-// };
-
-
-// src/Utils/firebase/firebase.js
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+import { getAuth } from "firebase/auth";
 import { 
   getFirestore, 
   collection, 
-  getDocs, 
   addDoc, 
-  doc, 
-  deleteDoc,
-  serverTimestamp
+  getDocs, 
+  updateDoc, 
+  deleteDoc, 
+  doc,
+  serverTimestamp,
+  query,
+  orderBy 
 } from "firebase/firestore";
-import { getStorage } from "firebase/storage";
 
-// Firebase konfiguratsiyasi
+// ✅ Firebase Configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAeirbtct_3GK0o8QhF_h3y_GrvflpO5Xo",
+  apiKey: "AIzaSyA8zXN1KjslZYtX5tJ-zD8sLr7A0UzTJ8Q",
   authDomain: "qrmenu-a61b8.firebaseapp.com",
   projectId: "qrmenu-a61b8",
   storageBucket: "qrmenu-a61b8.firebasestorage.app",
-  messagingSenderId: "931352270385",
-  appId: "1:931352270385:web:ecec29a1d9a28ff058e710",
-  measurementId: "G-JQC8PV9LGJ",
+  messagingSenderId: "966328361114",
+  appId: "1:966328361114:web:bcd935d3c7ca2e0a8f0c6a"
 };
 
-// Firebase ilovasini ishga tushirish
 const app = initializeApp(firebaseConfig);
+console.log("🔥 Firebase project:", app.options.projectId);
 
-// Export
-export const analytics = getAnalytics(app);
+export const auth = getAuth(app);
 export const db = getFirestore(app);
-export const storage = getStorage(app);
 
-// Menyu olish
+// ===================================
+// ✅ FETCH MENU - VARIANTS BILAN
+// ===================================
 export const fetchMenu = async () => {
   try {
-    const snapshot = await getDocs(collection(db, "dishes"));
-    const dishes = snapshot.docs.map(doc => {
+    const dishesSnapshot = await getDocs(collection(db, "dishes"));
+    
+    const dishes = dishesSnapshot.docs.map((doc) => {
       const data = doc.data();
+      
       return {
         id: doc.id,
-        title: data.title || "No title",
-        price: Number(data.price) || 0,
-        imageUrl: data.imageUrl || "",
-        description: data.description || "",
-        category: data.category || "ovqatlar",
-        outOfStock: data.outOfStock || false,
+        ...data,  // 👈 variants ham avtomatik keladi
+        // Agar variants Array bo'lmasa, bo'sh array qilish:
+        variants: Array.isArray(data.variants) ? data.variants : []
       };
     });
+
+    console.log("🍽️ Menyu yuklandi:", dishes.length, "ta ovqat");
+    
+    // Debug uchun - variants bor ovqatlarni ko'rsatish
+    const withVariants = dishes.filter(d => d.variants && d.variants.length > 0);
+    console.log("✅ Variantli ovqatlar:", withVariants.length);
+    console.log("📋 Variantli ovqatlar:", withVariants.map(d => ({ 
+      title: d.title, 
+      variants: d.variants 
+    })));
+    
     return dishes;
   } catch (error) {
-    console.error("Menu olishda xato:", error);
-    return [];
+    console.error("❌ Menyu olishda xato:", error);
+    throw error;
   }
 };
 
-// ✅ YANGILANGAN - To'lov usuli va statusli buyurtma yuborish
+// ===================================
+// ✅ SEND ORDER - TO'LOV USULI BILAN
+// ===================================
 export const sendOrder = async (
   tableNumber, 
   items, 
   paymentStatus = "unpaid", 
   totalAmount = 0,
   orderId = null,
-  paymentMethod = null // ✅ YANGI PARAMETR: "cash" yoki "online"
+  paymentMethod = "cash"  // 👈 default: cash
 ) => {
   try {
-    if (!items || items.length === 0) {
-      throw new Error("Buyurtma bo'sh!");
-    }
-
     console.log("📤 Buyurtma yuborilmoqda:", {
       table: tableNumber,
       items: items.length + " ta ovqat",
-      paymentStatus: paymentStatus,
-      paymentMethod: paymentMethod, // ✅ YANGI
-      totalAmount: totalAmount
+      paymentStatus,
+      paymentMethod,
+      totalAmount
     });
 
     const orderData = {
       table: String(tableNumber),
-      items: items.map((i) => ({
-        id: i.id || "no-id",
-        dishId: i.dishId || i.id,
-        title: i.title || "No title",
-        variant: i.variant || null,
-        variantId: i.variantId || null,
-        price: Number(i.price) || 0,
-        count: Number(i.count) || 1,
-        imageUrl: i.imageUrl || "",
-      })),
+      items: items,
       status: "pending",
-      paymentStatus: paymentStatus, // unpaid, pending_payment, paid
-      paymentMethod: paymentMethod, // ✅ YANGI: cash, online, null
+      paymentStatus: paymentStatus,
+      paymentMethod: paymentMethod,  // 👈 to'lov usuli
       totalAmount: totalAmount,
       createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
     };
 
-    // Agar orderId berilgan bo'lsa, qo'shish
     if (orderId) {
-      orderData.orderId = orderId;
+      const orderRef = doc(db, "orders", orderId);
+      await updateDoc(orderRef, {
+        ...orderData,
+        updatedAt: serverTimestamp(),
+      });
+      console.log("✅ Buyurtma yangilandi! ID:", orderId);
+      return orderId;
+    } else {
+      const docRef = await addDoc(collection(db, "orders"), orderData);
+      console.log("✅ Buyurtma yuborildi! ID:", docRef.id);
+      return docRef.id;
     }
-
-    const docRef = await addDoc(collection(db, "orders"), orderData);
-    console.log("✅ Buyurtma yuborildi! ID:", docRef.id);
-    return docRef.id;
   } catch (error) {
     console.error("❌ Buyurtma yuborishda xato:", error);
     throw error;
   }
 };
 
-// Taomni o'chirish
-export const deleteDish = async (id) => {
+// ===================================
+// ✅ FETCH ORDERS
+// ===================================
+export const fetchOrders = async () => {
   try {
-    await deleteDoc(doc(db, "dishes", id));
-    console.log("✅ Ovqat o'chirildi");
+    const ordersQuery = query(
+      collection(db, "orders"),
+      orderBy("createdAt", "desc")
+    );
+    
+    const ordersSnapshot = await getDocs(ordersQuery);
+    
+    const orders = ordersSnapshot.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        ...data,
+        createdAt: data.createdAt?.toDate() || new Date(),
+      };
+    });
+
+    return orders;
   } catch (error) {
-    console.error("❌ O'chirishda xato:", error);
+    console.error("❌ Buyurtmalarni olishda xato:", error);
     throw error;
   }
 };
+
+// ===================================
+// ✅ DELETE ORDER
+// ===================================
+export const deleteOrder = async (orderId) => {
+  try {
+    await deleteDoc(doc(db, "orders", orderId));
+    console.log("✅ Buyurtma o'chirildi:", orderId);
+  } catch (error) {
+    console.error("❌ Buyurtmani o'chirishda xato:", error);
+    throw error;
+  }
+};
+
+// ===================================
+// ✅ UPDATE ORDER STATUS
+// ===================================
+export const updateOrderStatus = async (orderId, newStatus) => {
+  try {
+    const orderRef = doc(db, "orders", orderId);
+    await updateDoc(orderRef, {
+      status: newStatus,
+      updatedAt: serverTimestamp(),
+    });
+    console.log(`✅ Buyurtma ${orderId} statusi o'zgartirildi:`, newStatus);
+  } catch (error) {
+    console.error("❌ Status o'zgartirishda xato:", error);
+    throw error;
+  }
+};
+
+export default app;

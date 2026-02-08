@@ -13,7 +13,6 @@ const OrderHistory = () => {
   const tableNumber = getTableNumber();
   const SERVICE_FEE_RATE = 0.05;
 
-  // ✅ RESTORAN KARTA RAQAMI
   const RESTAURANT_CARD = "5614681215681945";
   const RESTAURANT_NAME = "Fazliddin Gaipov";
 
@@ -59,7 +58,6 @@ const OrderHistory = () => {
     }
   }, [tableNumber, location.pathname]);
 
-  // ✅ KARTA RAQAMINI NUSXALASH
   const copyCardNumber = () => {
     const cardNumber = RESTAURANT_CARD.replace(/\s/g, '');
     navigator.clipboard.writeText(cardNumber).then(() => {
@@ -133,8 +131,16 @@ const OrderHistory = () => {
     return `${days} kun oldin`;
   };
 
+  // ✅ TO'G'RI HISOBLASH: price + addonsTotal
+  const calculateItemTotal = (item) => {
+    const basePrice = Number(item.price) || 0;
+    const addonsPrice = Number(item.addonsTotal) || 0;
+    const count = Number(item.count) || 1;
+    return (basePrice + addonsPrice) * count;
+  };
+
   const calculateItemsTotal = (items) => {
-    return items.reduce((sum, item) => sum + (item.price * item.count), 0);
+    return items.reduce((sum, item) => sum + calculateItemTotal(item), 0);
   };
 
   const calculateServiceFee = (itemsTotal) => {
@@ -227,7 +233,7 @@ const OrderHistory = () => {
           </div>
         ) : (
           <>
-            {/* ✅ YUQORIDA FAQAT UMUMIY HISOB */}
+            {/* ✅ UMUMIY HISOB */}
             <div className="bg-gradient-to-br from-[#004332] to-[#00664a] text-white rounded-2xl shadow-2xl p-6 mb-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -272,8 +278,7 @@ const OrderHistory = () => {
                           {formatDate(order.createdAt)}
                         </p>
                         <p className="text-sm font-semibold text-gray-700">
-                          Buyurtma 
-                          {/* {order.id.slice(-6)} */}
+                          Buyurtma
                         </p>
                       </div>
                       {getStatusBadge(order.paymentStatus || order.status, order.paymentMethod)}
@@ -281,33 +286,64 @@ const OrderHistory = () => {
 
                     {/* Order Items */}
                     <div className="space-y-3 mb-3">
-                      {order.items.map((item, idx) => (
-                        <div key={idx} className="flex items-start gap-3">
-                          {item.imageUrl && (
-                            <img 
-                              src={item.imageUrl} 
-                              alt={item.title}
-                              className="w-14 h-14 rounded-lg object-cover flex-shrink-0"
-                            />
-                          )}
-                          <div className="flex-1 min-w-0">
-                            <p className="font-medium text-gray-800 text-sm break-words">
-                              {item.title}
+                      {order.items.map((item, idx) => {
+                        const basePrice = Number(item.price) || 0;
+                        const addonsPrice = Number(item.addonsTotal) || 0;
+                        const unitPrice = basePrice + addonsPrice;
+                        const itemTotal = unitPrice * item.count;
+                        
+                        return (
+                          <div key={idx} className="flex items-start gap-3">
+                            {item.imageUrl && (
+                              <img 
+                                src={item.imageUrl} 
+                                alt={item.title}
+                                className="w-14 h-14 rounded-lg object-cover flex-shrink-0"
+                              />
+                            )}
+                            <div className="flex-1 min-w-0">
+                              <p className="font-medium text-gray-800 text-sm break-words">
+                                {item.title}
+                              </p>
+                              
+                              {/* ✅ VARIANT KO'RSATISH */}
                               {item.variant && (
-                                <span className="ml-2 text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">
-                                  🎨 {item.variant}
-                                </span>
+                                <div className="mt-1 p-1.5 bg-blue-50 border border-blue-200 rounded">
+                                  <p className="text-xs text-blue-700 font-medium break-words">
+                                    🎨 {item.variant}
+                                  </p>
+                                </div>
                               )}
-                            </p>
-                            <p className="text-xs text-gray-500 mt-1">
-                              {item.count} x {item.price.toLocaleString()} so'm
-                            </p>
+                              
+                              {/* ✅ NARX TAFSILOTLARI */}
+                              <div className="mt-1 space-y-0.5 text-xs">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-gray-600">Asosiy:</span>
+                                  <span className="font-semibold text-gray-700">
+                                    {basePrice.toLocaleString()} so'm
+                                  </span>
+                                </div>
+                                
+                                {addonsPrice > 0 && (
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-blue-600">Qo'shimcha:</span>
+                                    <span className="font-semibold text-blue-700">
+                                      +{addonsPrice.toLocaleString()} so'm
+                                    </span>
+                                  </div>
+                                )}
+                                
+                                <div className="flex items-center gap-2 pt-0.5 border-t border-gray-100">
+                                  <span className="text-gray-700">Miqdor:</span>
+                                  <span className="font-bold text-gray-800">
+                                    {item.count} x {unitPrice.toLocaleString()} = {itemTotal.toLocaleString()} so'm
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
                           </div>
-                          <p className="font-semibold text-gray-700 text-sm whitespace-nowrap">
-                            {(item.count * item.price).toLocaleString()} so'm
-                          </p>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
 
                     {/* Kichik hisob */}
@@ -334,9 +370,9 @@ const OrderHistory = () => {
               })}
             </div>
 
-            {/* ✅ PASTDA TO'LOV MA'LUMOTLARI */}
+            {/* ✅ TO'LOV MA'LUMOTLARI */}
             <div className="mt-6">
-              {/* ✅ KARTA ORQALI TO'LOV */}
+              {/* KARTA ORQALI TO'LOV */}
               {hasOnlinePaymentOrders && (
                 <div className="bg-white rounded-xl shadow-lg p-6 mb-4">
                   <div className="flex items-center gap-3 mb-4">
@@ -424,7 +460,6 @@ const OrderHistory = () => {
                     </div>
                   </div>
 
-                  {/* Qo'shimcha ma'lumot */}
                   <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                     <p className="text-xs text-blue-800 leading-relaxed break-words whitespace-normal">
                       <span className="font-bold">💡 Eslatma:</span> To'lovni amalga oshirgandan so'ng, 
@@ -434,7 +469,7 @@ const OrderHistory = () => {
                 </div>
               )}
 
-              {/* ✅ NAQD TO'LOV */}
+              {/* NAQD TO'LOV */}
               {hasCashOrders && !hasOnlinePaymentOrders && !hasPaidOrders && (
                 <div className="bg-yellow-50 border-2 border-yellow-300 rounded-xl p-6 shadow-md">
                   <div className="flex items-start gap-3">
@@ -454,7 +489,7 @@ const OrderHistory = () => {
                 </div>
               )}
 
-              {/* ✅ TO'LANGAN */}
+              {/* TO'LANGAN */}
               {hasPaidOrders && !hasOnlinePaymentOrders && (
                 <div className="bg-green-50 border-2 border-green-300 rounded-xl p-6 shadow-md">
                   <div className="flex items-start gap-3">
